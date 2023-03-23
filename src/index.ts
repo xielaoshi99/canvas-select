@@ -19,7 +19,7 @@ export default class CanvasSelect extends EventBus {
     activeFillStyle = 'rgba(255, 0, 0,0.1)';
     ctrlStrokeStyle = '#000';
     ctrlFillStyle = '#fff';
-    ctrlRadius = 3;
+    ctrlRadius = 5;
     labelFillStyle = '#fff';
     labelFont = '10px sans-serif';
     textFillStyle = '#000';
@@ -150,7 +150,7 @@ export default class CanvasSelect extends EventBus {
     handleMouseDown(e: MouseEvent | TouchEvent) {
         e.stopPropagation();
         this.evt = e;
-        if (this.lock) return;
+        //   if (this.lock) return;
         const { mouseX, mouseY, mouseCX, mouseCY } = this.mergeEvent(e);
         const isMobile = e instanceof TouchEvent;
         const offsetX = Math.round(mouseX / this.scale);
@@ -207,6 +207,8 @@ export default class CanvasSelect extends EventBus {
 
                 this.update();
             }
+        } else if (!isMobile && e.buttons === 2 && e.which === 3) {
+            this.canvas.style.cursor = 'grab';
         }
     }
     drawer(offsetX: number, offsetY: number) {
@@ -276,7 +278,7 @@ export default class CanvasSelect extends EventBus {
     handelMouseMove(e: MouseEvent | TouchEvent) {
         e.stopPropagation();
         this.evt = e;
-        if (this.lock) return;
+        // if (this.lock) return;
         const { mouseX, mouseY, mouseCX, mouseCY } = this.mergeEvent(e);
         const isMobile = e instanceof TouchEvent;
         const offsetX = Math.round(mouseX / this.scale);
@@ -398,6 +400,7 @@ export default class CanvasSelect extends EventBus {
             }
             //绘制图形
             else if (this.activeShape.creating && this.isInBackground(e)) {
+                this.canvas.style.cursor = this.getDefaultCursor();
                 const x = Math.round(offsetX - this.originX / this.scale);
                 const y = Math.round(offsetY - this.originY / this.scale);
                 // 创建矩形
@@ -415,6 +418,7 @@ export default class CanvasSelect extends EventBus {
             this.update();
         } else if ((!isMobile && e.buttons === 2 && e.which === 3) || (isMobile && e.touches.length === 1 && !this.isTouch2)) {
             // 拖动背景
+            this.canvas.style.cursor = 'grabbing';
             this.originX = Math.round(mouseX - this.remmberOrigin[0]);
             this.originY = Math.round(mouseY - this.remmberOrigin[1]);
             this.update();
@@ -429,8 +433,9 @@ export default class CanvasSelect extends EventBus {
     }
     handelMouseUp(e: MouseEvent | TouchEvent) {
         e.stopPropagation();
+        this.canvas.style.cursor = this.getDefaultCursor();
         this.evt = e;
-        if (this.lock) return;
+        // if (this.lock) return;
         if (e instanceof TouchEvent) {
             if (e.touches.length === 0) {
                 this.isTouch2 = false;
