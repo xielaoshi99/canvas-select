@@ -943,7 +943,7 @@ export default class CanvasSelect extends EventBus {
      * @param pure 不绘制
      */
     setScale(type: boolean, byMouse = false, pure = false) {
-        if (this.lock) return;
+        if (this.lock) return false;
         if ((!type && this.imageMin <= 50) || (type && this.IMAGE_WIDTH >= this.imageOriginMax * 10)) return;
         if (type) {
             this.scaleStep++;
@@ -971,6 +971,7 @@ export default class CanvasSelect extends EventBus {
         }
         if (!pure) {
             this.update();
+            this.emit('scale', (this.scaleStep >= 0 ? 1.05 : 0.95) ** abs);
         }
     }
 
@@ -983,7 +984,6 @@ export default class CanvasSelect extends EventBus {
         if (!id) {
             this.fitToOrigin();
         }
-
         if (!id) {
             this.fitToOrigin();
         } else {
@@ -1002,6 +1002,7 @@ export default class CanvasSelect extends EventBus {
             this.originY = -(yRate * this.IMAGE_HEIGHT - this.HEIGHT / 2);
             shape.active = true;
         }
+        this.emit('scale', 1.05 ** this.scaleStep);
         this.update();
     }
     fitToOrigin() {
