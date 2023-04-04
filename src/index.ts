@@ -988,9 +988,6 @@ export default class CanvasSelect extends EventBus {
     fitZoom(id = '') {
         if (!id) {
             this.fitToOrigin();
-        }
-        if (!id) {
-            this.fitToOrigin();
         } else {
             let shape = this.dataset.find((i) => i.uuid == id);
             let cx = (shape.coor[1][0] + shape.coor[0][0]) / 2;
@@ -1005,6 +1002,7 @@ export default class CanvasSelect extends EventBus {
             this.IMAGE_HEIGHT = this.IMAGE_ORIGIN_HEIGHT * 1.05 ** this.scaleStep;
             this.originX = -(xRate * this.IMAGE_WIDTH - this.WIDTH / 2);
             this.originY = -(yRate * this.IMAGE_HEIGHT - this.HEIGHT / 2);
+            this.dataset.forEach((i) => (i.active = false));
             shape.active = true;
         }
         this.emit('scale', 1.05 ** this.scaleStep);
